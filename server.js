@@ -21,14 +21,14 @@ mongodb.connect(connectionString, { useNewUrlParser: true }, (err, client) => {
 
 app.use(helmet());
 app.use(morgan('dev'));
-app.use(passwordProtected);
+app.use(passwordProtected); // Use for all routes
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static('public'));
 
 function passwordProtected(req, res, next) {
   res.set('WWW-Authenticate', 'Basic realm="Simple Todo App"');
-  console.log(req.headers.authorization);
+  console.log(req.headers.authorization); // user and password
   if (req.headers.authorization === 'Basic bGVhcm46amF2YXNjcmlwdA==') {
     next();
   } else {
@@ -80,7 +80,7 @@ app.post('/create-item', (req, res) => {
   let safeText = sanitizeHTML(req.body.text, {
     allowedTags: [],
     allowedAttributes: [],
-  });
+  }); // html tags and attributes not allowed
   db.collection('items').insertOne({ text: safeText }, (err, info) => {
     res.json(info.ops[0]);
   });
@@ -90,7 +90,7 @@ app.post('/update-item', (req, res) => {
   let safeText = sanitizeHTML(req.body.text, {
     allowedTags: [],
     allowedAttributes: [],
-  });
+  }); // html tags and attributes not allowed
   db.collection('items').findOneAndUpdate(
     { _id: new mongodb.ObjectID(req.body.id) },
     { $set: { text: safeText } },

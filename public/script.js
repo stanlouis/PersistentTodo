@@ -2,12 +2,8 @@ function itemTemplate(item) {
   return `<li class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
         <span class="item-text">${item.text}</span>
         <div>
-          <button data-id="${
-            item._id
-          }" class="edit-me btn btn-secondary btn-sm mr-1">Edit</button>
-          <button data-id="${
-            item._id
-          }" class="delete-me btn btn-danger btn-sm">Delete</button>
+          <button data-id="${item._id}" class="edit-me btn btn-secondary btn-sm mr-1">Edit</button>
+          <button data-id="${item._id}" class="delete-me btn btn-danger btn-sm">Delete</button>
         </div>
       </li>`;
 }
@@ -57,9 +53,12 @@ document.addEventListener('click', e => {
   }
   // Update Feature
   if (e.target.classList.contains('edit-me')) {
+    const todoElement = e.target.parentElement.parentElement.querySelector(
+      '.item-text'
+    );
     let userInput = prompt(
       'Enter your desired new text',
-      e.target.parentElement.parentElement.querySelector('.item-text').innerHTML
+      todoElement.innerHTML
     );
     if (userInput) {
       axios
@@ -68,9 +67,7 @@ document.addEventListener('click', e => {
           id: e.target.getAttribute('data-id'),
         })
         .then(() => {
-          e.target.parentElement.parentElement.querySelector(
-            '.item-text'
-          ).innerHTML = userInput;
+          todoElement.innerHTML = userInput;
         })
         .catch(() => {
           console.log('Please try again later');
